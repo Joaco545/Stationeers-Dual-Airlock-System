@@ -44,7 +44,19 @@ ble r1 r0 cycle         # If less cycle
                         # If more goto main
 
 main:
-j main
+yield                   # Only run once per fram pls
+l r1 other Setting      # Check if other is on init
+beqz r1 init            # and follow
+l r0 self Setting       # Load my state to r0
+beq r0 r1 init          # If out of sync init
+beq r1 cms_cycle cycle  # Cycle if other is too
+l r0 ext_door Setting   # If doors dont match
+l r1 ext_door Open      # desired state with actual
+bne r1 r0 cycle         # state, cycle airlock
+l r0 int_door Setting   # If doors dont match
+l r1 int_door Open      # desired state with actual
+bne r1 r0 cycle         # state, cycle airlock
+j main                  # Finish loop
 
 cycle:
 j main
