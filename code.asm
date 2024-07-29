@@ -27,7 +27,7 @@ yield                   # Wait until
 l r1 other Setting      # other also
 brle r1 cms_cycle -2    # sets its state
 # If the doors are different, all ok
-bne r0 r1 main
+bne r14 r1 main
 # Else gotta fight for dominance
 sync:
 s self Setting cms_sync # Communicate Sync
@@ -37,10 +37,10 @@ rand r0                 # Generate random value
 s other Setting r0      # Write rnd to other
 yield                   # Wait until
 l r1 self Setting       # mine is
-brne r1 4 -2            # set by other
+breq r1 4 -2            # set by other
 beq r1 r0 sync          # If equal retry
 s self Setting r14      # "Remember" my state
-ble r1 r0 cycle         # If less cycle
+ble r0 r1 cycle         # If less cycle
                         # If more goto main
 
 main:
