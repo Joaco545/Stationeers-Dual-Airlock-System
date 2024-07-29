@@ -75,8 +75,8 @@ l r0 gas_sen Pressure   # Get current pressure
 brlt r0 r1 3            # if pres is less min > skip
 push cms_oti
 j ra                    # Return
-# Panic
-jr 0                    # Get code stuck
+push cms_ote        # prefer vent over contamination
+j ra                    # Return
 
 wait_until_other_equal: # returns void
 pop r15
