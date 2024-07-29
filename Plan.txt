@@ -1,0 +1,56 @@
+Dual Airlock System
+Objective: Have 2 airlocks that are on an inverted state
+
+Doors: ArL_Door - [NAME] - [INT/EXT] - [1/2]
+Sensors: Arl_Sen - [NAME] - [1/2]
+Vents: Arl_Vent - [NAME] - [INT/EXT] - [1/2]
+
+
+1 airlock: 2 doors, 1 gas sensor, 2 active vents; 5/6 pins used, last pin for coms?
+
+airlock steps:
+Close the door
+Drain towards current till void
+Turn off vent
+Turn on other vent to fill to pressure target
+Open other door
+
+Coms states:
+0 - Initializing
+1 - Cycling
+2 - Open to INT (oti)
+3 - Open to EXT (ote)
+4 - Ready to Sync
+
+Code init:
+Set coms to init
+Wait for other to init
+Get current state
+Save state to register
+Set coms to state
+Wait for other coms > 1
+Compare state
+if other state != my state
+    start main loop
+if other state == my state (else)
+    set coms to 4
+    wait till other also shows 4
+    place a randomly generated number on other Setting
+    wait till yours is not 4
+    compare and cycle if lowest
+
+check state: (int = oti = 2 | ext = ote = 3)
+if any door is open
+    return that
+if pressure > min(ext/int)
+    return int
+else
+    PANIC!
+
+main:
+[some code]
+goto main
+
+cycle:
+[some code]
+goto main
