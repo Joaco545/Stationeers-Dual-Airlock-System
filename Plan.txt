@@ -22,6 +22,9 @@ Coms states:
 3 - Open to EXT (ote)
 4 - Ready to Sync
 
+
+lock doors (Mode = 1)
+lock vents (Lock = 1)
 Code init:
 Set coms to init
 Wait for other to init
@@ -48,9 +51,26 @@ else
     PANIC!
 
 main:
-[some code]
+check if other is doing an init and follow
+check for correct sync (other state == self state => init)
+check for cycle request
+read door settings
+if door X Setting != door X Open  (if lack of lines, modularize code (pass int/ext door through stack))
+    cycle airlock
 goto main
 
-cycle:
-[some code]
-goto main
+cycle: (greedy, wont let control go until it's job is complete)
+grab current state
+set coms to cycling
+load to r13, r12, r11, r10, r9, current door, current vent, other door, other vent, target pressure (use select to make it easy (thanks @tsoleht on discord))
+close current door
+set current vent Mode to Inward (1)
+set current vent On 1
+wait till pressure target (target = 0)
+set current vent On 0
+set other vent Mode Outward
+set other vent On 1
+wait till pressure target (target pressure = r9)
+set other vent On 0
+open other door
+Cycle complete goto main
